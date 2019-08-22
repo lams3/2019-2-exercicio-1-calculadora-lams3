@@ -14,11 +14,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Usado para o passo 5, recupera as informacoes da instancia anterior da Activity
         savedInstanceState?.run {
             text_info.text = savedInstanceState.getString("previousTextInfo")
             text_calc.setText(savedInstanceState.getString("previousTextCalc"))
         }
 
+        // Uma lista de todos os botoes que adicionam texto ao text_calc
         val btns = listOf(
             btn_0, btn_1, btn_2, btn_3, btn_4,
             btn_5, btn_6, btn_7, btn_8, btn_9,
@@ -26,11 +28,14 @@ class MainActivity : AppCompatActivity() {
             btn_Divide, btn_LParen, btn_RParen,
             btn_Dot, btn_Power
         )
+        // Adiciona listeners para os botoes
         for (btn in btns)
             btn.setOnClickListener { text_calc.setText(text_calc.text.toString() + btn.text) }
 
+        // listeners para os demais botoes
         btn_Clear.setOnClickListener { text_calc.setText("") }
         btn_Equal.setOnClickListener {
+            // tratamento da excecao ao submeter string invalida
             try {
                 text_info.text = eval(text_calc.text.toString()).toString()
             } catch (e: RuntimeException) {
@@ -39,12 +44,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Usado para o passo 5, salva as informacoes da instancia a ser destruida da Activity
     override fun onSaveInstanceState(outState: Bundle?) {
         outState?.run {
             putString("previousTextInfo", text_info.text.toString())
             putString("previousTextCalc", text_calc.text.toString())
         }
-        // call superclass to save any view hierarchy
+
         super.onSaveInstanceState(outState)
     }
 

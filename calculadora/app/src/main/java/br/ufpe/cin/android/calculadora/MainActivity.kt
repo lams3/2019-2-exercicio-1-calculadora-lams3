@@ -2,14 +2,51 @@ package br.ufpe.cin.android.calculadora
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
+
+    private var previousText : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        savedInstanceState?.run {
+            text_info.text = savedInstanceState.getString("previousTextInfo")
+            text_calc.setText(savedInstanceState.getString("previousTextCalc"))
+        }
+
+        val btns = listOf(
+            btn_0, btn_1, btn_2, btn_3, btn_4,
+            btn_5, btn_6, btn_7, btn_8, btn_9,
+            btn_Add, btn_Subtract, btn_Multiply,
+            btn_Divide, btn_LParen, btn_RParen,
+            btn_Dot, btn_Power
+        )
+        for (btn in btns)
+            btn.setOnClickListener { text_calc.setText(text_calc.text.toString() + btn.text) }
+
+        btn_Clear.setOnClickListener { text_calc.setText("") }
+        btn_Equal.setOnClickListener {
+            try {
+                text_info.text = eval(text_calc.text.toString()).toString()
+            } catch (e: RuntimeException) {
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
+    override fun onSaveInstanceState(outState: Bundle?) {
+        outState?.run {
+            putString("previousTextInfo", text_info.text.toString())
+            putString("previousTextCalc", text_calc.text.toString())
+        }
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState)
+    }
 
     //Como usar a função:
     // eval("2+2") == 4.0
